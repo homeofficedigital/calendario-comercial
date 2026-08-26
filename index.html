@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOD — Calendário Comercial Set–Dez 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F5EF;
+    --paper:#FFFFFF;
+    --ink:#1C2A22;
+    --ink-soft:#4C5A51;
+    --green-deep:#1B5E20;
+    --green-mid:#3D8361;
+    --green-pale:#E7F0E9;
+    --gold:#C0873A;
+    --gold-pale:#F7ECDC;
+    --muted:#B7C0B9;
+    --muted-pale:#F0F1EC;
+    --line:#E1DED3;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:32px 20px 80px;
+  }
+  .wrap{max-width:960px;margin:0 auto;}
+
+  /* ---------- Header ---------- */
+  header{margin-bottom:28px;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--green-mid);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(28px,4.5vw,42px);
+    line-height:1.08;
+    margin:0 0 8px;
+    color:var(--green-deep);
+    letter-spacing:-0.01em;
+  }
+  .sub{
+    font-size:15px;
+    color:var(--ink-soft);
+    max-width:560px;
+    line-height:1.5;
+  }
+
+  /* ---------- Tabs ---------- */
+  nav.tabs{
+    display:flex;
+    gap:8px;
+    margin:8px 0 20px;
+    flex-wrap:wrap;
+  }
+  .tab-btn{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    padding:9px 18px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .tab-btn:hover{border-color:var(--green-mid);color:var(--green-deep);}
+  .tab-btn.active{
+    background:var(--green-deep);
+    border-color:var(--green-deep);
+    color:#fff;
+  }
+  .tab-btn .count{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    opacity:.75;
+    margin-left:6px;
+  }
+
+  /* ---------- Month meta ---------- */
+  .month-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .month-title{
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    font-weight:600;
+    color:var(--green-deep);
+  }
+  .month-note{
+    font-size:13px;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+
+  /* ---------- Week cards ---------- */
+  .weeks{display:flex;flex-direction:column;gap:12px;}
+  .week-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-left:4px solid var(--muted);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    display:grid;
+    grid-template-columns:96px 1fr;
+    gap:16px;
+  }
+  .week-card.intensity-1{border-left-color:var(--green-mid);opacity:.92;}
+  .week-card.intensity-2{border-left-color:var(--green-mid);}
+  .week-card.intensity-3{
+    border-left-color:var(--gold);
+    background:linear-gradient(135deg,#fff 60%, var(--gold-pale) 130%);
+  }
+  .wc-period{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .wc-week{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    font-weight:600;
+    color:var(--green-mid);
+    letter-spacing:.04em;
+  }
+  .wc-dates{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    color:var(--ink);
+    font-weight:500;
+    line-height:1.3;
+  }
+  .wc-intensity-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--muted);
+    margin-top:2px;
+  }
+  .week-card.intensity-1 .wc-intensity-dot{background:var(--green-mid);opacity:.55;}
+  .week-card.intensity-2 .wc-intensity-dot{background:var(--green-mid);}
+  .week-card.intensity-3 .wc-intensity-dot{background:var(--gold);}
+
+  .wc-body{min-width:0;}
+  .wc-tema{
+    font-size:15.5px;
+    font-weight:700;
+    color:var(--ink);
+    margin-bottom:2px;
+  }
+  .wc-data-comercial{
+    font-size:12.5px;
+    color:var(--green-mid);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .wc-condicao{
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+    background:var(--gold-pale);
+    border:1px solid #EBD8B8;
+    border-radius:10px;
+    padding:9px 12px;
+    margin-bottom:12px;
+    font-size:13px;
+    line-height:1.45;
+    color:#6B4A16;
+  }
+  .wc-condicao.routine{
+    background:var(--muted-pale);
+    border-color:var(--line);
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+  .wc-condicao .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:700;
+    white-space:nowrap;
+    padding-top:1px;
+  }
+  .roles{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:7px;
+  }
+  .role-row{
+    display:grid;
+    grid-template-columns:76px 1fr;
+    gap:10px;
+    font-size:12.5px;
+    line-height:1.4;
+  }
+  .role-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    padding-top:1px;
+  }
+  .role-text{color:var(--ink);}
+
+  @media (max-width:600px){
+    .week-card{grid-template-columns:1fr;}
+    .wc-period{
+      flex-direction:row;
+      align-items:center;
+      gap:10px;
+    }
+    .role-row{grid-template-columns:66px 1fr;}
+  }
+
+  footer{
+    margin-top:34px;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">HOD · Comercial</div>
+    <h1>Calendário Comercial</h1>
+    <div class="sub">Setembro a dezembro de 2026 — visão semana a semana para SDR, Closers e Gestão, com o pulso de intensidade comercial de cada mês.</div>
+  </header>
+
+  <nav class="tabs" id="tabs"></nav>
+
+  <div class="month-meta">
+    <div class="month-title" id="monthTitle"></div>
+    <div class="month-note" id="monthNote"></div>
+  </div>
+
+  <div class="weeks" id="weeks"></div>
+
+  <footer>Ferramenta de acompanhamento interno — HOD (Home Office Digital) · fundado em 07/12/2020</footer>
+</div>
+
+<script>
+const DATA = {
+  "Set": {
+    note: "Fase 1 simplificada — 1 rotina + 1 data comercial",
+    weeks: [
+      {week:"S1", periodo:"01–07/09", tema:"Sprint de Largada", dataComercial:"Rotina fixa de início de mês", intensity:1, isRoutine:false,
+        condicao:null,
+        sdr:"Reaquecer leads mornos dos últimos 60 dias, em vez de partir para leads frios",
+        closer:"Priorizar leads \u201cquase fechando\u201d do mês anterior",
+        gestao:"Confirmar que a meta de prospecção do SDR não caiu junto do fechamento do mês anterior"},
+      {week:"S2", periodo:"08–14/09", tema:"Rotina normal", dataComercial:null, intensity:0, isRoutine:true,
+        condicao:null,
+        sdr:"Prospecção e qualificação normais", closer:"Atendimento e fechamento normais", gestao:"Acompanhamento padrão do funil"},
+      {week:"S3", periodo:"15–21/09", tema:"Dia do Cliente", dataComercial:"15/09", intensity:2, isRoutine:false,
+        condicao:"Upgrade PRO→BLACK sem aumento de parcela, limitado às primeiras vagas do dia (ex: 20) ou até 23h59",
+        sdr:"Oferecer upgrade PRO→BLACK para a base de alunos ativos",
+        closer:"Atender os upgrades gerados pelo SDR",
+        gestao:"Acompanhar o resultado da ação"},
+      {week:"S4", periodo:"22–28/09", tema:"Rotina normal", dataComercial:null, intensity:0, isRoutine:true,
+        condicao:null,
+        sdr:"Prospecção e qualificação normais", closer:"Atendimento e fechamento normais", gestao:"Acompanhamento padrão do funil"},
+      {week:"S5", periodo:"29–30/09", tema:"Rotina normal", dataComercial:null, intensity:0, isRoutine:true,
+        condicao:null,
+        sdr:"Prospecção e qualificação normais", closer:"Atendimento e fechamento normais", gestao:"Revisar funil e preparar a abertura de outubro"},
+    ]
+  },
+  "Out": {
+    note: "Mês crítico de construção de funil para novembro",
+    weeks: [
+      {week:"S1", periodo:"01–07/10", tema:"Sprint de Largada", dataComercial:"+ início da construção de funil p/ novembro", intensity:1, isRoutine:false,
+        condicao:null,
+        sdr:"Reaquecer base; elevar o ritmo de prospecção — o funil de novembro começa aqui",
+        closer:"Rotina normal",
+        gestao:"Comunicar ao time que outubro é o mês de construir o funil de novembro"},
+      {week:"S2", periodo:"08–14/10", tema:"Dia das Crianças", dataComercial:"12/10", intensity:2, isRoutine:false,
+        condicao:"Bônus temático de boas-vindas (não financeiro), válido na janela de 5–7 dias em torno da data",
+        sdr:"Campanha com o ângulo \u201cmais tempo/renda para estar perto dos filhos\u201d",
+        closer:"Atender os leads gerados pela campanha",
+        gestao:"Acompanhar performance da campanha"},
+      {week:"S3", periodo:"15–21/10", tema:"Rotina normal", dataComercial:null, intensity:0, isRoutine:true,
+        condicao:null,
+        sdr:"Manter ritmo elevado de prospecção", closer:"Atendimento e fechamento normais", gestao:"Acompanhamento padrão do funil"},
+      {week:"S4", periodo:"22–28/10", tema:"Rotina normal", dataComercial:null, intensity:1, isRoutine:true,
+        condicao:null,
+        sdr:"Manter ritmo elevado de prospecção — funil crescendo para novembro",
+        closer:"Preparar agenda para novembro",
+        gestao:"Validar capacidade de atendimento dos closers para novembro"},
+      {week:"S5", periodo:"29–31/10", tema:"Rotina normal", dataComercial:null, intensity:1, isRoutine:true,
+        condicao:null,
+        sdr:"Finalizar captação do mês", closer:"Atendimento e fechamento normais",
+        gestao:"Checagem final: o funil é suficiente para a meta de novembro?"},
+    ]
+  },
+  "Nov": {
+    note: "Mês de maior expectativa — meta de 150 → 300 mentorias",
+    weeks: [
+      {week:"S1", periodo:"01–07/11", tema:"Abertura acelerada", dataComercial:"Sem sprint leve este mês", intensity:1, isRoutine:false,
+        condicao:null,
+        sdr:"Manter ritmo elevado de prospecção",
+        closer:"Iniciar atendimento do volume gerado em outubro",
+        gestao:"Acompanhar ritmo diário; sem folga de início de mês este mês"},
+      {week:"S2", periodo:"08–14/11", tema:"Esquenta Black", dataComercial:"+ opcional 11.11", intensity:2, isRoutine:false,
+        condicao:"Prioridade de acesso à condição para quem entra na waitlist — gatilho psicológico, sem custo/desconto",
+        sdr:"Comunicar \u201ca condição especial está chegando\u201d; captar lista de interesse (waitlist)",
+        closer:"Sem oferta ainda; gerar expectativa nos contatos em andamento",
+        gestao:"Definir mecânica da condição BLACK e briefing geral"},
+      {week:"S3", periodo:"15–21/11", tema:"Pré-Black intensivo", dataComercial:null, intensity:2, isRoutine:false,
+        condicao:"Reforçar a prioridade da waitlist; nenhuma condição nova ainda",
+        sdr:"Contatar toda a base de leads mornos dos últimos 60–90 dias",
+        closer:"Agenda cheia de calls para depois da liberação da condição",
+        gestao:"Validar capacidade de atendimento (closers suficientes para dobrar o volume)"},
+      {week:"S4a", periodo:"22–26/11", tema:"Pré-venda exclusiva", dataComercial:"Waitlist", intensity:2, isRoutine:false,
+        condicao:"Acesso antecipado à condição BLACK, com bônus decrescente a cada dia (quem fecha antes, leva mais)",
+        sdr:"Ativar lista de espera com condição antecipada exclusiva",
+        closer:"Fechar antecipações da waitlist",
+        gestao:"Monitorar volume antecipado vs. meta total"},
+      {week:"S4b", periodo:"27/11", tema:"Black Friday", dataComercial:"Evento principal", intensity:3, isRoutine:false,
+        condicao:"\u201cPague o PRO, leve o BLACK\u201d — maior condição do ano, vagas limitadas e válida só no dia",
+        sdr:"Divulgação geral da condição",
+        closer:"Foco total em fechamento; condição BLACK como driver de upgrade de ticket",
+        gestao:"Acompanhamento em tempo real do volume do dia"},
+      {week:"S4c", periodo:"28–30/11", tema:"Black Weekend + Cyber Monday", dataComercial:"30/11", intensity:2, isRoutine:false,
+        condicao:"Prorrogação da mesma condição da sexta (sem melhorar) — comunicação de \u201cúltimas horas\u201d",
+        sdr:"Reativar quem não fechou na sexta",
+        closer:"Últimas conversões da campanha",
+        gestao:"Avaliar se estende ou encerra; iniciar consolidação de resultados"},
+    ]
+  },
+  "Dez": {
+    note: "Fase 1 simplificada + lançamento da data proprietária",
+    weeks: [
+      {week:"S1", periodo:"01–07/12", tema:"Última chamada + Aniversário HOD", dataComercial:"07/12 — 6 anos", intensity:2, isRoutine:false,
+        condicao:"Bônus-surpresa comemorativo (6 anos), revelado só no momento da compra",
+        sdr:"Última chamada para quem ficou na dúvida na Black",
+        closer:"Fechar pendências da campanha de novembro",
+        gestao:"Usar o aniversário de 6 anos do HOD como gancho simples para abrir a narrativa da Virada Profissional"},
+      {week:"S2", periodo:"08–14/12", tema:"Rotina normal", dataComercial:null, intensity:0, isRoutine:true,
+        condicao:null,
+        sdr:"Trabalhar base de leads que não fecharam em novembro", closer:"Atendimento e fechamento normais", gestao:"Acompanhamento padrão do funil"},
+      {week:"S3", periodo:"15–21/12", tema:"Rotina normal", dataComercial:null, intensity:1, isRoutine:true,
+        condicao:null,
+        sdr:"Prospecção e qualificação normais", closer:"Atendimento e fechamento normais",
+        gestao:"Preparar peças e narrativa para o lançamento da Virada Profissional (26/12)"},
+      {week:"S4", periodo:"22–25/12", tema:"Pausa comercial relativa", dataComercial:"Natal (25/12)", intensity:0, isRoutine:true,
+        condicao:null,
+        sdr:"Baixa pressão até 25/12", closer:"Baixa pressão até 25/12", gestao:"—"},
+      {week:"S5", periodo:"26–31/12", tema:"Virada Profissional", dataComercial:"Data proprietária HOD", intensity:2, isRoutine:false,
+        condicao:"1ª parcela só em janeiro (ninguém recebeu em dezembro) + bônus de planejamento/metas para 2027",
+        sdr:"Captar interesse de quem quer \u201ccomeçar o ano diferente\u201d",
+        closer:"Fechar o máximo possível antes da virada",
+        gestao:"Consolidar resultados do ano"},
+    ]
+  }
+};
+
+const MONTHS = ["Set","Out","Nov","Dez"];
+let current = "Set";
+
+function buildTabs(){
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = '';
+  MONTHS.forEach(m => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (m===current ? ' active' : '');
+    btn.innerHTML = m + '<span class="count">' + DATA[m].weeks.length + ' sem.</span>';
+    btn.onclick = () => { current = m; render(); };
+    tabs.appendChild(btn);
+  });
+}
+
+function fullMonthName(m){
+  return {Set:"Setembro", Out:"Outubro", Nov:"Novembro", Dez:"Dezembro"}[m];
+}
+
+function render(){
+  buildTabs();
+  document.getElementById('monthTitle').textContent = fullMonthName(current) + ' 2026';
+  document.getElementById('monthNote').textContent = DATA[current].note;
+
+  const weeksEl = document.getElementById('weeks');
+  weeksEl.innerHTML = '';
+  DATA[current].weeks.forEach(w => {
+    const card = document.createElement('div');
+    card.className = 'week-card intensity-' + w.intensity;
+
+    const period = document.createElement('div');
+    period.className = 'wc-period';
+    period.innerHTML = `
+      <div class="wc-intensity-dot"></div>
+      <div class="wc-week">${w.week}</div>
+      <div class="wc-dates">${w.periodo}</div>
+    `;
+
+    const body = document.createElement('div');
+    body.className = 'wc-body';
+
+    let condicaoHtml = '';
+    if(w.condicao){
+      condicaoHtml = `<div class="wc-condicao"><span class="tag">Condição</span><span>${w.condicao}</span></div>`;
+    } else if(w.isRoutine){
+      condicaoHtml = `<div class="wc-condicao routine"><span class="tag">—</span><span>Sem condição comercial nesta semana</span></div>`;
+    }
+
+    body.innerHTML = `
+      <div class="wc-tema">${w.tema}</div>
+      ${w.dataComercial ? `<div class="wc-data-comercial">${w.dataComercial}</div>` : ''}
+      ${condicaoHtml}
+      <div class="roles">
+        <div class="role-row"><div class="role-tag">SDR</div><div class="role-text">${w.sdr}</div></div>
+        <div class="role-row"><div class="role-tag">Closer</div><div class="role-text">${w.closer}</div></div>
+        <div class="role-row"><div class="role-tag">Gestão</div><div class="role-text">${w.gestao}</div></div>
+      </div>
+    `;
+
+    card.appendChild(period);
+    card.appendChild(body);
+    weeksEl.appendChild(card);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
