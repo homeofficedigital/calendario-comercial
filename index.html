@@ -56,9 +56,26 @@
   .tab-btn:disabled{opacity:.35;cursor:not-allowed;}
   .tab-btn:disabled:hover{border-color:var(--line);color:var(--ink-soft);}
 
-  .exec-panel{
+  .exec-panel{margin-bottom:22px;}
+
+  .exec-banner{
+    background:linear-gradient(135deg, var(--green-deep), var(--green-mid));
+    border-radius:var(--radius);
+    padding:20px 24px;
+    margin-bottom:12px;
+  }
+  .exec-banner-label{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:6px;
+  }
+  .exec-banner-phrase{
+    font-family:'Fraunces',serif;font-weight:600;font-size:clamp(19px,3vw,26px);
+    line-height:1.2;color:#fff;letter-spacing:-0.01em;
+  }
+
+  .exec-stats-row{
     display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
-    gap:10px;margin-bottom:22px;
+    gap:10px;
   }
   .exec-stat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
   .exec-num{font-family:'Fraunces',serif;font-size:24px;font-weight:600;color:var(--green-deep);line-height:1;}
@@ -151,29 +168,29 @@
 const RAW_DAYS = [
 ["Set","S1",1,null,null,null,null,"Day OFF para Closers e SDRs."],
 ["Set","S1",2,null,"Disparo por template de whatsapp. Priorizando status Tentativa de Contato.","Revisão da qualificação dos leads em aberto no CRM.","Revisão da qualificação dos leads em aberto no CRM.","Kickoff do mês com o time. Alinhamento de meta e reflexão sobre mês anterior."],
-["Set","S1",3,null,null,"Priorizar volume de qualificação, não leads frios.","Priorizar leads \u201cquase fechando\u201d do mês anterior; menor pressão de fechamento imediato.",null],
+["Set","S1",3,null,"Reunião com Henrico - Gestão de tráfego","Priorizar volume de qualificação, não leads frios.","Priorizar leads \u201cquase fechando\u201d do mês anterior; menor pressão de fechamento imediato.",null],
 ["Set","S1",4,null,null,null,null,null],
 ["Set","S1",5,null,null,null,null,null],
 ["Set","S2",6,null,null,null,null,null],
 ["Set","S2",7,"FERIADO NACIONAL",null,null,null,null],
 ["Set","S2",8,null,null,"Ação de higienização da base de CRM",null,null],
 ["Set","S2",9,"Double Date",null,null,null,"Avaliar possibilidade de aplicação de condição especial para fechamento nesse dia."],
-["Set","S2",10,null,null,null,null,null],
-["Set","S2",11,null,null,null,null,null],
+["Set","S2",10,null,"Reunião com Henrico - Gestão de tráfego",null,null,null],
+["Set","S2",11,null,null,null,null,"Reunião Lideranças"],
 ["Set","S2",12,null,null,null,null,null],
 ["Set","S3",13,null,null,null,null,null],
 ["Set","S3",14,null,null,null,null,null],
 ["Set","S3",15,"Dia do Cliente",null,"Ação de higienização da base de CRM",null,null],
-["Set","S3",16,null,null,null,null,null],
-["Set","S3",17,null,null,null,null,null],
-["Set","S3",18,null,null,null,null,null],
+["Set","S3",16,null,null,null,null,"Reunião geral - Avaliação dos resultados do mês até aqui. O que deu certo e o que precisa ser ajustado. Premiação referente ao mês de agosto."],
+["Set","S3",17,null,"Reunião com Henrico - Gestão de tráfego",null,null,null],
+["Set","S3",18,null,null,null,null,"Reunião Lideranças"],
 ["Set","S3",19,null,null,null,null,null],
 ["Set","S4",20,null,null,null,null,null],
 ["Set","S4",21,null,null,null,null,null],
 ["Set","S4",22,null,null,"Ação de higienização da base de CRM",null,null],
 ["Set","S4",23,null,null,null,null,null],
-["Set","S4",24,null,null,null,null,null],
-["Set","S4",25,null,null,null,null,null],
+["Set","S4",24,null,"Reunião com Henrico - Gestão de tráfego",null,null,null],
+["Set","S4",25,null,null,null,null,"Reunião Lideranças"],
 ["Set","S4",26,null,null,null,null,null],
 ["Set","S5",27,null,null,null,null,null],
 ["Set","S5",28,null,null,null,null,null],
@@ -215,6 +232,12 @@ const RAW_DAYS = [
 
 const MONTH_NAMES = {Set:"Setembro", Out:"Outubro", Nov:"Novembro", Dez:"Dezembro"};
 const ALL_MONTHS = ["Set","Out","Nov","Dez"];
+
+// Painel Executivo — começa com a frase motivacional do mês.
+// Meses sem frase definida simplesmente não mostram o banner.
+const FRASES_MOTIVACIONAIS = {
+  Set: "VAMOS FAZER DE SETEMBRO, O MELHOR MÊS DAS NOSSAS VIDAS.",
+};
 
 // Agrupa RAW_DAYS em { mes: { weeks: [ {semana, dias:[...]} ] } }
 function buildData(){
@@ -279,12 +302,25 @@ function renderExecPanel(){
     { num: s.datasComerciais, text: "Datas comerciais marcadas" },
     { num: `${s.semanasSemRegistro}/${s.totalSemanas}`, text: "Semanas ainda sem registro" },
   ];
-  panel.innerHTML = cards.map(c => `
-    <div class="exec-stat">
-      <div class="exec-num">${c.num}</div>
-      <div class="exec-label">${c.text}</div>
+
+  const frase = FRASES_MOTIVACIONAIS[current];
+  const bannerHtml = frase ? `
+    <div class="exec-banner">
+      <div class="exec-banner-label">Painel Executivo · ${MONTH_NAMES[current]}</div>
+      <div class="exec-banner-phrase">${frase}</div>
     </div>
-  `).join('');
+  ` : '';
+
+  panel.innerHTML = bannerHtml + `
+    <div class="exec-stats-row">
+      ${cards.map(c => `
+        <div class="exec-stat">
+          <div class="exec-num">${c.num}</div>
+          <div class="exec-label">${c.text}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
 }
 
 function dayBlockHtml(d){
