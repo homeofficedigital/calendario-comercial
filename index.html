@@ -73,16 +73,7 @@
     line-height:1.2;color:#fff;letter-spacing:-0.01em;
   }
 
-  .exec-stats-row{
-    display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
-    gap:10px;
-  }
-  .exec-stat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
-  .exec-num{font-family:'Fraunces',serif;font-size:24px;font-weight:600;color:var(--green-deep);line-height:1;}
-  .exec-label{
-    font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.04em;
-    text-transform:uppercase;color:var(--ink-soft);margin-top:4px;
-  }
+
 
   .month-meta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
   .month-title{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--green-deep);}
@@ -98,12 +89,24 @@
   .week-card.has-label{border-left-color:var(--gold);}
   .week-card.muted{border-left-color:var(--muted);}
 
-  .wc-top{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .wc-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;cursor:pointer;user-select:none;}
   .wc-week{
     font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
     color:var(--green-mid);letter-spacing:.04em;
   }
   .wc-range{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);}
+  .wc-toggle{
+    margin-left:auto;
+    display:flex;align-items:center;justify-content:center;
+    width:22px;height:22px;border-radius:6px;
+    border:1px solid var(--line);background:var(--paper);
+    color:var(--ink-soft);font-size:11px;line-height:1;
+    transition:transform .15s ease;
+  }
+  .week-card.collapsed .wc-toggle{transform:rotate(-90deg);}
+  .week-card.collapsed .wc-body-wrap{display:none;}
+  .week-card.collapsed{padding-bottom:12px;}
+  .week-card.collapsed .wc-top{margin-bottom:0;}
 
   .wc-empty{font-size:12.5px;color:var(--ink-soft);font-style:italic;}
 
@@ -262,6 +265,7 @@ function buildData(){
 const DATA = buildData();
 const MONTHS = ALL_MONTHS.filter(m => DATA[m]);
 let current = MONTHS[0];
+const collapsedWeeks = new Set();
 
 function hasAnyRole(d){ return d.marketing || d.sdr || d.closer || d.gestao; }
 function hasAnything(d){ return d.dataComercial || hasAnyRole(d); }
@@ -280,47 +284,17 @@ function buildTabs(){
   });
 }
 
-function computeStats(monthData){
-  let diasComConteudo = 0, datasComerciais = 0, semanasSemRegistro = 0, totalDias = 0;
-  monthData.weeks.forEach(w => {
-    let weekHasContent = false;
-    w.dias.forEach(d => {
-      totalDias += 1;
-      if(hasAnything(d)) { diasComConteudo += 1; weekHasContent = true; }
-      if(d.dataComercial) datasComerciais += 1;
-    });
-    if(!weekHasContent) semanasSemRegistro += 1;
-  });
-  return { diasComConteudo, datasComerciais, semanasSemRegistro, totalSemanas: monthData.weeks.length, totalDias };
-}
+
 
 function renderExecPanel(){
-  const s = computeStats(DATA[current]);
   const panel = document.getElementById('execPanel');
-  const cards = [
-    { num: `${s.diasComConteudo}/${s.totalDias}`, text: "Dias com registro" },
-    { num: s.datasComerciais, text: "Datas comerciais marcadas" },
-    { num: `${s.semanasSemRegistro}/${s.totalSemanas}`, text: "Semanas ainda sem registro" },
-  ];
-
   const frase = FRASES_MOTIVACIONAIS[current];
-  const bannerHtml = frase ? `
+  panel.innerHTML = frase ? `
     <div class="exec-banner">
       <div class="exec-banner-label">Painel Executivo · ${MONTH_NAMES[current]}</div>
       <div class="exec-banner-phrase">${frase}</div>
     </div>
   ` : '';
-
-  panel.innerHTML = bannerHtml + `
-    <div class="exec-stats-row">
-      ${cards.map(c => `
-        <div class="exec-stat">
-          <div class="exec-num">${c.num}</div>
-          <div class="exec-label">${c.text}</div>
-        </div>
-      `).join('')}
-    </div>
-  `;
 }
 
 function dayBlockHtml(d){
@@ -364,11 +338,16 @@ function render(){
     const chips = activeDays.filter(d => d.dataComercial && !hasAnyRole(d));
     const blocks = activeDays.map(dayBlockHtml).filter(Boolean);
 
+    const key = current + '-' + w.semana;
+    const isCollapsed = collapsedWeeks.has(key);
+
     const card = document.createElement('div');
+    card.id = 'card-' + key;
     let cls = 'week-card';
     if(blocks.length) cls += ' has-content';
     else if(chips.length) cls += ' has-label';
     else cls += ' muted';
+    if(isCollapsed) cls += ' collapsed';
     card.className = cls;
 
     const first = w.dias[0].dia, last = w.dias[w.dias.length-1].dia;
@@ -378,14 +357,22 @@ function render(){
       : `<div class="wc-empty">Nenhum registro ainda para esses dias.</div>`;
 
     card.innerHTML = `
-      <div class="wc-top">
+      <div class="wc-top" onclick="toggleWeek('${key}')">
         <span class="wc-week">${w.semana}</span>
         <span class="wc-range">dias ${String(first).padStart(2,'0')}–${String(last).padStart(2,'0')}</span>
+        <span class="wc-toggle">▾</span>
       </div>
-      ${bodyHtml}
+      <div class="wc-body-wrap">${bodyHtml}</div>
     `;
     weeksEl.appendChild(card);
   });
+}
+
+function toggleWeek(key){
+  if(collapsedWeeks.has(key)) collapsedWeeks.delete(key);
+  else collapsedWeeks.add(key);
+  const card = document.getElementById('card-' + key);
+  if(card) card.classList.toggle('collapsed');
 }
 
 render();
